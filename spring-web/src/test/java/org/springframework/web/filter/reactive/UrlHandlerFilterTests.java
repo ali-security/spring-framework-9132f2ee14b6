@@ -64,6 +64,10 @@ class UrlHandlerFilterTests {
 	void redirect() throws URISyntaxException {
 		testRedirect("/**", new URI(null, null, "/path/123/", "foo=bar", null), "/path/123?foo=bar");
 		// no way to create java.net.URI with leading slashes
+		// ...unless the URI is absolute, in which case the raw path follows the authority
+		testRedirect("/**", URI.create("http://localhost//path/123/"), "/path/123");
+		testRedirect("/**", URI.create("http://localhost///path/123/"), "/path/123");
+		testRedirect("/**", URI.create("http://localhost////path/123/"), "/path/123");
 	}
 
 	private static void testRedirect(String pattern, URI uri, String location) {
